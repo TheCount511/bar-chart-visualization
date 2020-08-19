@@ -19,14 +19,18 @@ let fetchJson=( url)=>{
 	.then(response=> response.json() )
 	.then((response) => {
 		let data = response.data
-		return data.map(item => {
-			return item[1]
+		let values= data.map(item => {
+			return item[1]	
+		});
+		let dates = data.map(item => {
+			return item[0]	
 		})
+		return ([values, dates])
 
 }).then(value => {
  
  d3.select("body").selectAll("div")
-      .data(value)
+      .data(value[0])
       .enter()
       .append("div")
       .attr("class", "bar")
