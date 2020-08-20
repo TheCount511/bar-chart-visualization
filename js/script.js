@@ -1,40 +1,78 @@
-const dataset=[40, 50, 34, 78, 89, 45, 67, 89, 23, 56, 389, 58, 56, 23,]
 
-/*let date;
-let value
+const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
-    d3.select("body").selectAll("div")
-      .data(dataset)
-      .enter()
-      .append("div")
-      .attr("class", "bar")
-      .style("height", (d)=>`${d}px`)*/
+const formatTooltip=(dateInput, amountInput)=>
+{
 
-let url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
+const year = dateInput.substring(0,4);
+const quarterVal = Number(dateInput.substring(5,7));
 
-let fetchJson=( url)=>{
-	let date;
-	let time;
+let quarter = (v)=>{
+	let q;
+	switch (quarterVal)
+	{
+	case 1: return  q = "Q1"; break;
+	case 4: return q= "Q2"; break;
+	case 7: return q = "Q3"; break;
+	case 10: return q= "Q4"; break;
+	default: return q= "INVALID quarter";
+	}
+
+	return q
+}
+
+return `${year} ${quarter(quarterVal)} \n $${amountInput} BILLION`;
+}
+
+const fetchJson=( url)=>{
 	fetch(url)
 	.then(response=> response.json() )
 	.then((response) => {
-		let data = response.data
-		let values= data.map(item => {
+		const data = response.data
+		const values= data.map(item => {
 			return item[1]	
 		});
-		let dates = data.map(item => {
+		const dates = data.map(item => {
 			return item[0]	
-		})
-		return ([values, dates])
+		});
+		let labels = [];
+(() => {
+		
+values.map((item,index)=>{
+
+	labels.push(formatTooltip(dates[index], item))
+})
+})();
+console.log(labels);
+
+		return ([values, dates, labels])
 
 }).then(value => {
- 
- d3.select("body").selectAll("div")
+  let Y;
+
+ const svg = d3.select("body")
+ 	.append("svg")
+ 	.attr("width", 800)
+ 	.attr("height", 800);
+ 		svg.selectAll("rect")
       .data(value[0])
       .enter()
-      .append("div")
+      .append("rect")
+      .attr("x", (val, index)=> index*3)
+      .attr("y", (d)=>800- d/25)
+      .attr("width", `${2}px`)
+      .attr("height", (d) => d/25 )
       .attr("class", "bar")
-      .style("height", (d)=>`${d/2}px`)
+      .append("title");
+
+      svg.selectAll("text")
+      .data(value[1])
+      .enter()
+      .append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .text((d)=> d)
+      
 });
 
 }

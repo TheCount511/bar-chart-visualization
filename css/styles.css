@@ -1,10 +1,7 @@
  .bar {
-    width: 4px;
-    height: 100px;
-    display: inline-block;
-    background-color: blue;
+    fill: blue;
   }
 
   .bar:hover{
-  	background-color: ghostwhite;
+  	fill: ghostwhite;
   }
