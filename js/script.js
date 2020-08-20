@@ -48,7 +48,6 @@ console.log(labels);
 		return ([values, dates, labels])
 
 }).then(value => {
-  let Y;
 
  const svg = d3.select("body")
  	.append("svg")
@@ -63,7 +62,9 @@ console.log(labels);
       .attr("width", `${2}px`)
       .attr("height", (d) => d/25 )
       .attr("class", "bar")
-      .append("title");
+      .append("title")
+      .text((d, i)=> value[2][i])
+      ;
 
       svg.selectAll("text")
       .data(value[1])
