@@ -42,9 +42,12 @@ const fetchJson=( url)=>{
 		const dates = data.map(item => {
 			return item[0]	
 		});
+		const fullDates = dates.map(item=>{
+			return new Date(item)
+		})
 
 const chartArray = values.map((item,index)=>{
- return [ formatYears(dates[index]), item, formatTooltip(dates[index], item)]
+ return [ fullDates[index], item, formatTooltip(dates[index], item)]
 })
 
 
@@ -69,13 +72,13 @@ const padding = 30;
 const xScale =  d3.scaleLinear()
 .domain([
 	d3.min(value, (d)=> d[0]), 
-	d3.max(value, (d)=>d[0])
+	d3.max(value, (d)=> d[0].setMonth(d[0].getMonth() + 3))
 	 ])
 .range([padding, canvasWidth-padding]);
 
 const yScale = d3.scaleLinear()
 .domain([
-	d3.min(value, (d)=> d[1]), 
+	0, 
 	d3.max(value, (d)=> d[1])
 	])
 .range([canvasHeight-padding, padding]);
@@ -90,9 +93,9 @@ const svg = d3.select("body")
   .enter()
   .append("rect")
   .attr("x", (d)=> xScale(d[0]))
-  .attr("y", (d)=> canvasHeight - yScale(d[1]))
-  .attr("width", (d)=> 1.5)
-  .attr("height", (d) => yScale(d[1]))
+  .attr("y", (d)=> yScale(d[1]))
+  .attr("width", (d)=> 2)
+  .attr("height", (d) => canvasHeight- yScale(d[1]))
   .attr("class", "bar");
 
  /* svg.selectAll("text")
