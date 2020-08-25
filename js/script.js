@@ -1,12 +1,18 @@
 
 const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
+const canvasWidth = 1230;
+const canvasHeight = 830;
+
+
+const formatYears = (dateInput)=>{
+	return Number(dateInput.substring(0,4));
+}
+
 const formatTooltip=(dateInput, amountInput)=>
 {
-
-const year = dateInput.substring(0,4);
+year = formatYears(dateInput)
 const quarterVal = Number(dateInput.substring(5,7));
-
 let quarter = (v)=>{
 	let q;
 	switch (quarterVal)
@@ -21,7 +27,8 @@ let quarter = (v)=>{
 	return q
 }
 
-return `${year} ${quarter(quarterVal)} \n $${amountInput} BILLION`;
+return `${year} ${quarter(quarterVal)} \n $${amountInput.toLocaleString()} BILLION`;
+
 }
 
 const fetchJson=( url)=>{
@@ -35,46 +42,70 @@ const fetchJson=( url)=>{
 		const dates = data.map(item => {
 			return item[0]	
 		});
-		let labels = [];
-(() => {
-		
-values.map((item,index)=>{
 
-	labels.push(formatTooltip(dates[index], item))
+const chartArray = values.map((item,index)=>{
+ return [ formatYears(dates[index]), item, formatTooltip(dates[index], item)]
 })
-})();
-console.log(labels);
 
-		return ([values, dates, labels])
+
+return chartArray
 
 }).then(value => {
 
- const svg = d3.select("body")
- 	.append("svg")
- 	.attr("width", 800)
- 	.attr("height", 800);
- 		svg.selectAll("rect")
-      .data(value[0])
-      .enter()
-      .append("rect")
-      .attr("x", (val, index)=> index*3)
-      .attr("y", (d)=>800- d/25)
-      .attr("width", `${2}px`)
-      .attr("height", (d) => d/25 )
-      .attr("class", "bar")
-      .append("title")
-      .text((d, i)=> value[2][i])
-      ;
+/*const tooltip = d3.select("body")
+			.append("div") 
+    		.attr("class", "tooltip")               
+    		.style("display", "block");
+    .on("mouseover", function(d) {
+      tooltip.html("d[2]")
+     .style('top', d3.event.canvasHeight - 12 + 'px')
+     .style('left', d3.event.canvasWidth + 25 + 'px')
+     .style("display", "block")
+      })
+	.on("mouseout", function(d) {
+    tooltip.style("display", "none");
+});*/
+const padding = 30;
+const xScale =  d3.scaleLinear()
+.domain([
+	d3.min(value, (d)=> d[0]), 
+	d3.max(value, (d)=>d[0])
+	 ])
+.range([padding, canvasWidth-padding]);
 
-      svg.selectAll("text")
-      .data(value[1])
-      .enter()
-      .append("text")
-      .attr("x", 0)
-      .attr("y", 0)
-      .text((d)=> d)
-      
-});
+const yScale = d3.scaleLinear()
+.domain([
+	d3.min(value, (d)=> d[1]), 
+	d3.max(value, (d)=> d[1])
+	])
+.range([canvasHeight-padding, padding]);
+
+const svg = d3.select("body")
+ 	.append("svg")
+ 	.attr("width", canvasWidth)
+ 	.attr("height", canvasHeight);
+ 	
+ svg.selectAll("rect")
+  .data(value)
+  .enter()
+  .append("rect")
+  .attr("x", (d)=> xScale(d[0]))
+  .attr("y", (d)=> canvasHeight - yScale(d[1]))
+  .attr("width", (d)=> 1.5)
+  .attr("height", (d) => yScale(d[1]))
+  .attr("class", "bar");
+
+ /* svg.selectAll("text")
+  .data(value)
+  .enter()
+  .append("text")
+  .attr("x", 0)
+  .attr("y", 100)
+  .text((d)=> d) 
+*/
+
+
+  });
 
 }
 

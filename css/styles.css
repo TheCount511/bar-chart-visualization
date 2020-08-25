@@ -5,3 +5,11 @@
   .bar:hover{
   	fill: ghostwhite;
   }
+
+  .tooltip{
+  	text-align: center;
+  	background-color: goldenrod;
+  	position: absolute;
+  	height: 50px;
+  	width: 50px;
+  }
