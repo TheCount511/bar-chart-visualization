@@ -4,6 +4,7 @@
 
   .bar:hover{
   	fill: ghostwhite;
+  	cursor: pointer;
   }
 
   .tooltip{
