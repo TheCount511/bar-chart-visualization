@@ -1,7 +1,7 @@
 
 const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
-const canvasWidth =800;
+const canvasWidth = 1000;
 const canvasHeight = 400;
 const barWidth = canvasWidth/275;
 const padding = 30;
@@ -64,36 +64,36 @@ const maxDate = d3.max(value, (d)=> d[0]);
 
 const xScale =  d3.scaleTime()
 .domain([minDate, maxDate])
-.range([0, canvasWidth]);
+.range([padding, canvasWidth-padding]);
 
 const yScale = d3.scaleLinear()
 .domain([0, gpdMax])
-.range([0, canvasHeight]);
+.range([canvasHeight-padding, padding]);
 
 const xAxis = d3.axisBottom(xScale);
 const yAxis = d3.axisLeft(yScale);
 
 const svg = d3.select("body")
  	.append("svg")
- 	.attr("width", canvasWidth + 100)
- 	.attr("height", canvasHeight + 60);
+ 	.attr("width", canvasWidth)
+ 	.attr("height", canvasHeight);
  	
  svg.selectAll("rect")
   .data(value)
   .enter()
   .append("rect")
   .attr("x", (d)=> xScale(d[0]))
-  .attr("y", (d)=> canvasHeight - yScale(d[1]))
+  .attr("y", (d)=>  yScale(d[1]))
   .attr("width", (d) => barWidth )
-  .attr("height", (d) =>   yScale(d[1]))
+  .attr("height", (d) => canvasHeight -  yScale(d[1]))
   .attr("class", "bar");
   
   svg.append("g")
-  .attr("transform", `translate(0, ${canvasHeight})`)
+  .attr("transform", `translate(0, ${canvasHeight-padding})`)
   .call(xAxis)
 
   svg.append("g")
-  .attr("transform", `translate(60, 0)`)
+  .attr("transform", `translate(${padding}, 0)`)
   .call(yAxis);
 
 	 
