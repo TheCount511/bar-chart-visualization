@@ -1,9 +1,9 @@
  .bar {
-    fill: blue;
+    fill: coral;
   }
 
   .bar:hover{
-  	fill: ghostwhite;
+  	fill: navajowhite;
   	cursor: pointer;
   }
 

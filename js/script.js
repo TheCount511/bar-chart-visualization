@@ -1,10 +1,10 @@
 
 const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
-const canvasWidth = 1000;
+const canvasWidth = 800;
 const canvasHeight = 400;
 const barWidth = canvasWidth/275;
-const padding = 30;
+const padding = 60;
 
 
 const formatYears = (dateInput)=>{
@@ -85,7 +85,7 @@ const svg = d3.select("body")
   .attr("x", (d)=> xScale(d[0]))
   .attr("y", (d)=>  yScale(d[1]))
   .attr("width", (d) => barWidth )
-  .attr("height", (d) => canvasHeight -  yScale(d[1]))
+  .attr("height", (d) => canvasHeight - padding -  yScale(d[1]))
   .attr("class", "bar");
   
   svg.append("g")
