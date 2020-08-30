@@ -96,8 +96,19 @@ const svg = d3.select("body")
   .attr("transform", `translate(${padding}, 0)`)
   .call(yAxis);
 
+  const Tooltip = d3.select("body").append("div")
+  				  .attr("class", "tooltip");
 	 
+  const mouseover =(d)=>{
+  			Tooltip.style("opacity", 1)
+  			d3.select(this)
+  			.style("stroke", "black")
+  			.style("opacity", 1)
+  }
 
+  const mouseMove = (d)=>{
+  	Tooltip.html
+  }
 
  /* svg.selectAll("text")
   .data(value)
