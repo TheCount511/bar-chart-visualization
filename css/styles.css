@@ -1,16 +1,26 @@
+ body{
+background-color: powderblue;
+ }
  .bar {
     fill: coral;
   }
 
-  .bar:hover{
-  	fill: navajowhite;
-  	cursor: pointer;
-  }
-
-  .tooltip{
-  	text-align: center;
-  	background-color: goldenrod;
-  	position: absolute;
-  	height: 50px;
-  	width: 50px;
-  }
+.overlay {
+  position: absolute;
+  background: #fff;
+  pointer-events: none; }
+ 
+ #tooltip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  width: 150px;
+  height: 50px;
+  padding: 2px;
+  font: 12px;
+  background: lightsteelblue;
+  box-shadow: 1px 1px 10px;
+  border-radius: 2px;
+  pointer-events: none; }

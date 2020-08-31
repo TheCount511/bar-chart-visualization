@@ -2,7 +2,7 @@
 const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
 const canvasWidth = 800;
-const canvasHeight = 400;
+const canvasHeight = 600;
 const barWidth = canvasWidth/275;
 const padding = 60;
 
@@ -77,7 +77,33 @@ const svg = d3.select("body")
  	.append("svg")
  	.attr("width", canvasWidth)
  	.attr("height", canvasHeight);
- 	
+ 
+ var tooltip = d3.select("body").append("div")
+  .attr("id", "tooltip")
+  .style("opacity", 0);
+
+var overlay = d3.select('body').append('div')
+  .attr('class', 'overlay')
+  .style('opacity', 0);
+
+ const mouseover = (d,i) =>{
+         overlay.transition()
+        .duration(0)
+        .style('height', canvasHeight - padding -  yScale(d[1]) + 'px')
+        .style('width', barWidth + 'px')
+        .style('opacity', .9)
+        .style('left', (i * barWidth) + 0 + 'px')
+        .style('top', canvasHeight - padding -  yScale(d[1]) + 'px')
+        .style('transform', 'translateX(60px)');
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', .9);
+             tooltip.html(d[2])
+        .style('left', (i * barWidth) + 0 + 'px')
+        .style('top', canvasHeight - 100 + 'px')
+        .style('transform', 'translateX(60px)'); 
+ }
+	 
  svg.selectAll("rect")
   .data(value)
   .enter()
@@ -86,8 +112,9 @@ const svg = d3.select("body")
   .attr("y", (d)=>  yScale(d[1]))
   .attr("width", (d) => barWidth )
   .attr("height", (d) => canvasHeight - padding -  yScale(d[1]))
-  .attr("class", "bar");
-  
+  .attr("class", "bar")
+  .on("mouseover", mouseover);
+
   svg.append("g")
   .attr("transform", `translate(0, ${canvasHeight-padding})`)
   .call(xAxis)
@@ -96,46 +123,8 @@ const svg = d3.select("body")
   .attr("transform", `translate(${padding}, 0)`)
   .call(yAxis);
 
-  const Tooltip = d3.select("body").append("div")
-  				  .attr("class", "tooltip");
-	 
-  const mouseover =(d)=>{
-  			Tooltip.style("opacity", 1)
-  			d3.select(this)
-  			.style("stroke", "black")
-  			.style("opacity", 1)
-  }
-
-  const mouseMove = (d)=>{
-  	Tooltip.html
-  }
-
- /* svg.selectAll("text")
-  .data(value)
-  .enter()
-  .append("text")
-  .attr("x", 0)
-  .attr("y", 100)
-  .text((d)=> d) 
-*/
-
-
   });
 
 }
 
 fetchJson(url);
-
-/*const tooltip = d3.select("body")
-			.append("div") 
-    		.attr("class", "tooltip")               
-    		.style("display", "block");
-    .on("mouseover", function(d) {
-      tooltip.html("d[2]")
-     .style('top', d3.event.canvasHeight - 12 + 'px')
-     .style('left', d3.event.canvasWidth + 25 + 'px')
-     .style("display", "block")
-      })
-	.on("mouseout", function(d) {
-    tooltip.style("display", "none");
-});*/
