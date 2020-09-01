@@ -1,11 +1,14 @@
 
 const url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
-const canvasWidth = 800;
+const canvasWidth = 825;
 const canvasHeight = 600;
 const barWidth = canvasWidth/275;
 const padding = 60;
 
+const formatDate = (inputDate) =>{
+	return new Date(inputDate)
+}
 
 const formatYears = (dateInput)=>{
 	return Number(dateInput.substring(0,4));
@@ -49,7 +52,7 @@ const fetchJson=( url)=>{
 		})
 		const chartArray = values.map((item,index)=>
 		{
- 		 return [ fullDates[index], item, formatTooltip(dates[index], item)]
+ 		 return [dates[index], item, formatTooltip(dates[index], item)]
 			})
 
 
@@ -59,9 +62,9 @@ const fetchJson=( url)=>{
 .then(value => {
 
 const gpdMax = d3.max(value, (d)=> d[1]);
-const minDate = d3.min(value, (d)=> d[0]);
-const maxDate = d3.max(value, (d)=> d[0]);
-
+const minDate = d3.min(value, (d)=> formatDate(d[0]));
+const maxDate = d3.max(value, (d)=> formatDate(d[0]));
+console.log(maxDate)
 const xScale =  d3.scaleTime()
 .domain([minDate, maxDate])
 .range([padding, canvasWidth-padding]);
@@ -78,49 +81,60 @@ const svg = d3.select("body")
  	.attr("width", canvasWidth)
  	.attr("height", canvasHeight);
  
- var tooltip = d3.select("body").append("div")
+const tooltip = d3.select("body").append("div")
   .attr("id", "tooltip")
   .style("opacity", 0);
 
-var overlay = d3.select('body').append('div')
-  .attr('class', 'overlay')
-  .style('opacity', 0);
 
- const mouseover = (d,i) =>{
-         overlay.transition()
-        .duration(0)
-        .style('height', canvasHeight - padding -  yScale(d[1]) + 'px')
-        .style('width', barWidth + 'px')
-        .style('opacity', .9)
-        .style('left', (i * barWidth) + 0 + 'px')
-        .style('top', canvasHeight - padding -  yScale(d[1]) + 'px')
-        .style('transform', 'translateX(60px)');
-      tooltip.transition()
+const mouseover = (d,i) =>{
+     tooltip.transition()
         .duration(200)
         .style('opacity', .9);
-             tooltip.html(d[2])
-        .style('left', (i * barWidth) + 0 + 'px')
+      tooltip.html(d[2])
+        .style('left', (i * barWidth) + 'px')
         .style('top', canvasHeight - 100 + 'px')
-        .style('transform', 'translateX(60px)'); 
+        .attr("data-date", d[0]);
  }
+
+const mouseout = (d) => {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', 0);    }
 	 
- svg.selectAll("rect")
+svg.selectAll("rect")
   .data(value)
   .enter()
   .append("rect")
-  .attr("x", (d)=> xScale(d[0]))
+  .attr("x", (d)=> xScale(formatDate(d[0])))
   .attr("y", (d)=>  yScale(d[1]))
   .attr("width", (d) => barWidth )
   .attr("height", (d) => canvasHeight - padding -  yScale(d[1]))
   .attr("class", "bar")
-  .on("mouseover", mouseover);
+  .attr("data-gdp", (d)=>d[1])
+  .attr("data-date", (d)=>d[0])
+  .on("mouseover", mouseover)
+  .on('mouseout', mouseout);
+
+
+svg.append('text')
+.attr("transform", `rotate(-90)`)
+.attr('x', -300)
+.attr('y', 100)
+.text("Gross Domestic Product");
+
+svg.append('text')
+.attr('x', 350)
+.attr('y', 580)
+.text("More Information: http://www.bea.gov/national/pdf/nipaguid.pdf");
 
   svg.append("g")
+  .attr("id", "x-axis")
   .attr("transform", `translate(0, ${canvasHeight-padding})`)
   .call(xAxis)
 
   svg.append("g")
-  .attr("transform", `translate(${padding}, 0)`)
+  .attr("id", "y-axis")
+  .attr("transform", `translate(${59}, 0)`)
   .call(yAxis);
 
   });

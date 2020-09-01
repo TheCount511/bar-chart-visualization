@@ -4,11 +4,9 @@ background-color: powderblue;
  .bar {
     fill: coral;
   }
-
-.overlay {
-  position: absolute;
-  background: #fff;
-  pointer-events: none; }
+.bar:hover{
+	fill: white;
+}
  
  #tooltip {
   display: flex;
